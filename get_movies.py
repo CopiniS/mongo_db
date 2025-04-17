@@ -60,13 +60,39 @@ def build_movie_document(movie, details, credits):
         "atoresCoadjuvantes": coadjuvantes
     }
 
+def insert_number_last_page_file(number):
+    with open(file_name, "w") as file:
+        file.write(str(number))
+    print(f"File 'last_save_page' was created with value {str(number)}.")
+
+def look_last_saved_page():
+    if not os.path.exists(file_name):
+        insert_number_last_page_file(1)
+        return 1
+
+    with open(file_name, "r") as file:
+        saved_page = file.read().strip()
+
+    if not saved_page.isdigit():
+        print("The saved page file, is not correct.")
+        insert_number_last_page_file(1)
+        return 1
+
+    number = int(saved_page)
+    return number
+
+
 total_inseridos = 0
-page = 1
+#FOI ATE A PAGINA 501 com 9981 dados
+file_name = "last_saved_page.txt"
 while total_inseridos < 10000:
+    page = look_last_saved_page()
     movies = get_popular_movies(page)
     if not movies:
         break
     
+    insert_number_last_page_file(page+1)
+
     for movie in movies:
         try:
             details = get_movie_details(movie["id"])
@@ -81,7 +107,5 @@ while total_inseridos < 10000:
         except Exception as e:
             print("Erro:", e)
             continue
-
-    page += 1
 
 print("Finalizado. Total inserido:", total_inseridos)

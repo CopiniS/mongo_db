@@ -1,0 +1,167 @@
+1.  comando:    db.filmes.find().explain("executionStats")
+    nReturned: 10206,
+    executionTimeMillis: 3
+
+2.  comando:    db.filmes.find({"ano": 2024}).explain("executionStats")
+    nReturned: 900,
+    executionTimeMillis: 5
+
+3.  comando:    db.filmes.find({"atoresCoadjuvantes": { "$in": ["Anthony Anderson"] }}).explain("executionStats")
+    nReturned: 14,
+    executionTimeMillis: 9
+
+4.  comando:    db.filmes.find({"atorPrincipal.nome": {$regex: "DiCaprio", $options: "i"}}).explain("executionStats")    
+    nReturned: 27,
+    executionTimeMillisEstimate: 9
+
+5.  comando:    db.filmes.find({
+                    $or: [
+                        { "atorPrincipal.nacionalidade": "Canadense" },
+                        { "atorPrincipal.nacionalidade": "Australiano" }
+                    ]
+                }).explain("executionStats")    
+    nReturned: 5071,
+    executionTimeMillis: 7
+
+6.  comando:    db.filmes.find({
+                    genero: "Action",
+                    nota: { $gt: 7.5 }
+                }).explain("executionStats")
+    nReturned: 136,
+    executionTimeMillis: 7
+
+7.  comando:    db.filmes.find({
+                    genero: { $in: ["Action", "Drama"] }
+                }).explain("executionStats")
+    nReturned: 3752,
+    executionTimeMillis: 6
+
+8.  comando:    db.filmes.find({
+                    nota: { $gte: 5, $lte: 8 }
+                }).explain("executionStats")
+    nReturned: 9058,
+    executionTimeMillis: 8
+
+9.  comando:    db.filmes.find({
+                    diretor: { $regex: "^S", $options: "i" }
+                }).explain("executionStats")
+    nReturned: 872,
+    executionTimeMillis: 7
+
+10. comando:    db.filmes.find({
+                    dataLancamento: { $regex: "^2023" }
+                }).explain("executionStats")
+    nReturned: 557,
+    executionTimeMillis: 8
+
+11. comando:    db.filmes.find({
+                    "atorPrincipal.idade": { $gt: 40 }
+                }).explain("executionStats")
+    nReturned: 6655,
+    executionTimeMillis: 6
+
+12. comando:    db.filmes.find({
+                    $expr: { $gt: [{ $size: "$atoresCoadjuvantes" }, 3] }
+                }).explain("executionStats")
+    nReturned: 9861,
+    executionTimeMillis: 10
+
+13. comando:    db.filmes.find({
+                    $or: [
+                        { ano: 2020 },
+                        { ano: 2021 }
+                    ]
+                }).explain("executionStats")
+    nReturned: 649,
+    executionTimeMillis: 5
+
+14. comando:    db.filmes.find({
+                    genero: { $ne: "Comedy" }
+                }).explain("executionStats")
+    nReturned: 8883,
+    executionTimeMillis: 6
+
+15. comando:    db.runCommand({
+                    explain: {
+                        aggregate: "filmes",
+                        pipeline: [
+                            { $group: { _id: "$genero", total: { $sum: 1 } } }
+                        ],
+                        cursor: {}
+                    },
+                    verbosity: "executionStats"
+                });
+    nReturned: 20,
+    executionTimeMillis: 13
+
+16. comando:    db.runCommand({
+                    explain: {
+                        aggregate: "filmes",
+                        pipeline: [
+                        { $group: { _id: "$diretor", avgNota: { $avg: "$nota" } } }
+                        ],
+                        cursor: {}
+                    },
+                    verbosity: "executionStats"
+                });
+    nReturned: 5191,
+    executionTimeMillis: 20
+
+17. comando:    db.runCommand({
+                    explain: {
+                        aggregate: "filmes",
+                        pipeline: [
+                            { $match: { ano: { $gt: 2015 } } },
+                            { $group: { _id: "$ano", total: { $sum: 1 } } }
+                        ],
+                        cursor: {}
+                    },
+                    verbosity: "executionStats"
+                });
+    nReturned: 13,
+    executionTimeMillis: 6
+
+18. comando:    db.runCommand({
+                    explain: {
+                        aggregate: "filmes",
+                        pipeline: [
+                            { $group: { _id: "$genero" } },
+                            { $group: { _id: null, totalGeneros: { $sum: 1 } } }
+                        ],
+                        cursor: {}
+                    },
+                    verbosity: "executionStats"
+                });
+    nReturned: 1,
+    executionTimeMillis: 6
+
+19. comando:    db.runCommand({
+                    explain: {
+                        aggregate: "filmes",
+                        pipeline: [
+                            { $group: { _id: null, mediaIdade: { $avg: "$atorPrincipal.idade" } } }
+                        ],
+                        cursor: {}
+                    },
+                    verbosity: "executionStats"
+                });
+    nReturned: 1,
+    executionTimeMillis: 10
+
+20. comando:    db.runCommand({
+                    explain: {
+                        aggregate: "filmes",
+                        pipeline: [
+                            { $match: { genero: "Drama" } },
+                            { $group: { _id: null, somaNotas: { $sum: "$nota" } } }
+                        ],
+                        cursor: {}
+                    },
+                    verbosity: "executionStats"
+                });
+    nReturned: 1,
+    executionTimeMillis: 9
+  
+  
+  
+  

@@ -12,7 +12,7 @@
 
 4.  comando:    db.filmes.find({"atorPrincipal.nome": {$regex: "DiCaprio", $options: "i"}}).explain("executionStats")    
     nReturned: 27,
-    executionTimeMillisEstimate: 9
+    executionTimeMillis: 11,
 
 5.  comando:    db.filmes.find({
                     $or: [
@@ -64,7 +64,7 @@
                     $expr: { $gt: [{ $size: "$atoresCoadjuvantes" }, 3] }
                 }).explain("executionStats")
     nReturned: 9861,
-    executionTimeMillis: 10
+    executionTimeMillis: 8
 
 13. comando:    db.filmes.find({
                     $or: [
@@ -98,28 +98,34 @@
                     explain: {
                         aggregate: "filmes",
                         pipeline: [
-                        { $group: { _id: "$diretor", avgNota: { $avg: "$nota" } } }
+                        { $match: {
+                            diretor: { $regex: /Chad/i }, 
+                            titulo:  { $regex: "Wick" }     
+                            }
+                        },
+                        { $sort: { ano: -1 } }             
                         ],
                         cursor: {}
                     },
                     verbosity: "executionStats"
                 });
-    nReturned: 5191,
-    executionTimeMillis: 20
+    nReturned: 5,,
+    executionTimeMillis: 8
 
 17. comando:    db.runCommand({
                     explain: {
                         aggregate: "filmes",
                         pipeline: [
-                            { $match: { ano: { $gt: 2015 } } },
-                            { $group: { _id: "$ano", total: { $sum: 1 } } }
+                        { $sort: { nota: 1 } },  
+                        { $skip: 8000 },         
+                        { $limit: 100 }          
                         ],
                         cursor: {}
                     },
                     verbosity: "executionStats"
                 });
-    nReturned: 13,
-    executionTimeMillis: 6
+    nReturned: 100,
+    executionTimeMillis: 13,
 
 18. comando:    db.runCommand({
                     explain: {
@@ -164,4 +170,10 @@
   
   
   
-  
+MAIORES TEMPOS DE EXECUÇÂO
+    querie: 15,	tempo: 13 ms, tempoComIndice: 7 ms
+    querie: 17	tempo: 13 ms, tempoComIndice: 6 ms
+    querie: 4	tempo: 11 ms, tempoComIndice: 8 ms
+    querie: 19	tempo: 10 ms, tempoComIndice: 19 ms
+    querie: 3	tempo: 9 ms,  tempoComIndice: 1 ms
+    querie: 20	tempo: 9 ms,  tempoComIndice: 6 ms

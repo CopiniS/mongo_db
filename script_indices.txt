@@ -1,0 +1,20 @@
+INDEX PARA QUERIES 15 e 20:
+    db.filmes.createIndex({ genero: 1 });
+
+INDEX PARA QUERIE 17:
+    db.filmes.createIndex({ nota: 1 });
+
+INDEX PARA QUERIE 4:
+    db.filmes.createIndex({ "atorPrincipal.nome": "text" });
+
+INDEX PARA QUERIE 19:
+    db.filmes.createIndex({ "atorPrincipal.idade": 1 });
+
+INDEX PARA QUERIE 3:
+    db.filmes.createIndex({ atoresCoadjuvantes: 1 });
+
+INDEX COMPOSTO PARA NOTA E GENERO:
+    db.filmes.createIndex({ genero: 1, nota: 1 })
+
+
+

@@ -1,3 +1,11 @@
+## Instruções para execução
+##Instalar dependenca com: pip install requests pymongo python-dotenv
+## fazer um .env na raiz com essas variaveis:
+## STRING_CONECT_MONGO
+## DB_NAME
+## API_KEY
+## criar a API_KEY em: https://developer.themoviedb.org/reference/intro/getting-started
+
 import requests
 import random
 from pymongo import MongoClient

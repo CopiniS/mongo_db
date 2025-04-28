@@ -145,6 +145,7 @@
                     explain: {
                         aggregate: "filmes",
                         pipeline: [
+                            { $match: { "atorPrincipal.idade": { $gte: 18 } } },
                             { $group: { _id: null, mediaIdade: { $avg: "$atorPrincipal.idade" } } }
                         ],
                         cursor: {}
@@ -152,7 +153,7 @@
                     verbosity: "executionStats"
                 });
     nReturned: 1,
-    executionTimeMillis: 10
+    executionTimeMillis: 21
 
 20. comando:    db.runCommand({
                     explain: {
@@ -171,9 +172,20 @@
   
   
 MAIORES TEMPOS DE EXECUÇÂO
+    querie: 19	tempo: 21 ms, tempoComIndice: 14 ms
+        O índice em atorPrincipal.idade permitiu usar IXSCAN no $match, filtrando menos documentos antes do $group e reduzindo a carga.
+
     querie: 15,	tempo: 13 ms, tempoComIndice: 7 ms
+        O índice em genero foi escaneado em vez da coleção completa (COLLSCAN), acelerando a leitura mesmo sem filtro prévio.
+
     querie: 17	tempo: 13 ms, tempoComIndice: 6 ms
+        O índice em nota devolve os documentos já ordenados, eliminando o sort em memória e otimizando o skip/limit.
+
     querie: 4	tempo: 11 ms, tempoComIndice: 8 ms
-    querie: 19	tempo: 10 ms, tempoComIndice: 19 ms
+        O índice de texto em atorPrincipal.nome acelerou a localização dos termos, mas regex ainda faz verificação extra em cada documento.
+
     querie: 3	tempo: 9 ms,  tempoComIndice: 1 ms
+        O índice multikey em atoresCoadjuvantes localiza direto os documentos com o valor, reduzindo drasticamente o escaneamento.
+
     querie: 20	tempo: 9 ms,  tempoComIndice: 6 ms
+        O índice em genero agilizou o filtro inicial, diminuindo o número de documentos agrupados e acelerando o cálculo do $sum.

@@ -8,14 +8,12 @@ import os
 
 load_dotenv()   
 
-# Conexão MongoDB
 client = MongoClient(os.getenv("STRING_CONECT_MONGO"))
 db = client[os.getenv("DB_NAME")]
 collection = db["filmes"]
 
 print(client.list_database_names())
 
-# Configurações da API
 api_key = os.getenv("API_KEY")
 base_url = "https://api.themoviedb.org/3"
 headers = {
@@ -23,7 +21,6 @@ headers = {
     "Authorization": api_key
 }
 
-# Funções auxiliares
 def get_popular_movies(page):
     url = f"{base_url}/movie/popular?page={page}"
     return requests.get(url, headers=headers).json().get("results", [])
@@ -83,7 +80,8 @@ def look_last_saved_page():
 
 
 total_inseridos = 0
-#FOI ATE A PAGINA 501 com 9981 dados
+#FOI ATE A PAGINA 501 com 9981 dados, daí reiniciou da pagina 1
+
 file_name = "last_saved_page.txt"
 while total_inseridos < 10000:
     page = look_last_saved_page()
